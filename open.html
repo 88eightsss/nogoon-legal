@@ -28,19 +28,27 @@ p{color:var(--muted);font-size:.98rem;margin-bottom:20px}
   <a id="open" class="btn" href="#">Open in Sidestreet</a>
   <div id="codebox" class="hide">
     <div class="code" id="code"></div>
-    <p class="small">If the button does not work, open the app, go to Make, then Visit a page, and type this code. It works once.</p>
+    <p class="small" id="codehint">If the button does not work, open the app, go to Make, then Visit a page, and type this code. It works once.</p>
   </div>
   <p id="bad" class="small hide" style="margin-top:16px">This link looks incomplete. Ask the person who sent it for a new one.</p>
 </main>
 <script>
-// Opens an invite or a page in the Sidestreet app (Android package com.nogoon.app, scheme nogoon://).
+// Opens an invite (?i=), a host invite (?h=) or a page (?p=) in the Sidestreet app (Android package com.nogoon.app, scheme nogoon://).
 // Nothing is stored or sent anywhere; this page only reads its own link.
 (function () {
   var q = new URLSearchParams(location.search);
   var code = (q.get('i') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
   var page = (q.get('p') || '').toLowerCase();
+  var host = (q.get('h') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
   var path = null;
-  if (code.length >= 8 && code.length <= 16) {
+  if (host.length >= 8 && host.length <= 16) {
+    path = 'host/' + host;
+    document.getElementById('title').textContent = 'Host on Sidestreet';
+    document.getElementById('lead').textContent = 'You are invited to host volunteer days or meetups on Sidestreet.';
+    document.getElementById('code').textContent = host.replace(/(.{4})(?=.)/g, '$1-');
+    document.getElementById('codehint').textContent = 'If the button does not work, open the app, go to Make, then Become a host, and type this code. It works once.';
+    document.getElementById('codebox').className = '';
+  } else if (code.length >= 8 && code.length <= 16) {
     path = 'invite/' + code;
     document.getElementById('title').textContent = 'You are invited';
     document.getElementById('lead').textContent = 'Someone invited you to see their page on Sidestreet.';
