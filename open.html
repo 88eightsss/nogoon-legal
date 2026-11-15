@@ -33,15 +33,20 @@ p{color:var(--muted);font-size:.98rem;margin-bottom:20px}
   <p id="bad" class="small hide" style="margin-top:16px">This link looks incomplete. Ask the person who sent it for a new one.</p>
 </main>
 <script>
-// Opens an invite (?i=), a host invite (?h=) or a page (?p=) in the Sidestreet app (Android package com.nogoon.app, scheme nogoon://).
+// Opens an invite (?i=), a host invite (?h=), a door a friend opened (?d=) or a page (?p=) in the Sidestreet app (Android package com.nogoon.app, scheme nogoon://).
 // Nothing is stored or sent anywhere; this page only reads its own link.
 (function () {
   var q = new URLSearchParams(location.search);
   var code = (q.get('i') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
   var page = (q.get('p') || '').toLowerCase();
   var host = (q.get('h') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  var door = (q.get('d') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
   var path = null;
-  if (host.length >= 8 && host.length <= 16) {
+  if (/^D[A-Z0-9]{7}$/.test(door)) {
+    path = 'door/' + door;
+    document.getElementById('title').textContent = 'The door is open';
+    document.getElementById('lead').textContent = 'A friend is going somewhere and opened the door for you. No reply needed.';
+  } else if (host.length >= 8 && host.length <= 16) {
     path = 'host/' + host;
     document.getElementById('title').textContent = 'Host on Sidestreet';
     document.getElementById('lead').textContent = 'You are invited to host volunteer days or meetups on Sidestreet.';
